@@ -3,6 +3,7 @@
 
 #include "Components/QuestLogComponent.h"
 #include "QuestSystem/QuestBase.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values for this component's properties
 UQuestLogComponent::UQuestLogComponent()
@@ -18,11 +19,15 @@ void UQuestLogComponent::AddNewQuest(FName InQuestID)
 {
 	CurrentActiveQuests.AddUnique(InQuestID);
 
-	CurrentQuests.Add(
-		static_cast<AQuestBase*>(
-			GetWorld()->SpawnActor(AQuestBase::StaticClass())
-			)
-	);
+	FTransform SpawnTransform;
+	AQuestBase* newQuest = Cast<AQuestBase>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, QuestBaseClass, SpawnTransform));
+	if (newQuest)
+	{
+		newQuest->QuestId = InQuestID;
+
+		UGameplayStatics::FinishSpawningActor(newQuest, SpawnTransform);
+		CurrentQuests.Add(newQuest);
+	}
 }
 
 void UQuestLogComponent::CompleteQuest(FName InQuestID)
@@ -35,7 +40,7 @@ bool UQuestLogComponent::QueryActiveQuest(FName InQuestID)
 	return CurrentActiveQuests.Contains(InQuestID);
 }
 
-void UQuestLogComponent::TackQuest(FName InQuestID)
+void UQuestLogComponent::TrackQuest(FName InQuestID)
 {
 }
 

@@ -14,6 +14,9 @@ class QUESTSYSTEM_API UQuestLogComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AQuestBase> QuestBaseClass;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TArray<FName> CurrentActiveQuests;
 
@@ -41,7 +44,7 @@ public:
 	bool QueryActiveQuest(FName InQuestID);
 
 	UFUNCTION(Blueprintcallable)
-	void TackQuest(FName InQuestID);
+	void TrackQuest(FName InQuestID);
 
 protected:
 	// Called when the game starts

@@ -13,7 +13,12 @@ class UQuestLogComponent;
 class UInputAction;
 struct FInputActionValue;
 
+//TODO: добавить проверку, на то что класс для спавна квеста выбран правильно. Так же добавить проверку, что дата тейбл выбран в БП_квест бейсе.
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+//Delegates
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectiveIDCalled, FString, ObjectiveID);
 
 /**
  *  A simple player-controllable third person character
@@ -24,6 +29,10 @@ class AQuestSystemCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UQuestLogComponent* QuestLogComponent;
+
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -31,9 +40,10 @@ class AQuestSystemCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
-	UQuestLogComponent* QuestLogComponent;
+
+public:
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnObjectiveIDCalled OnObjectiveIDCalledDelegate;
 
 protected:
 

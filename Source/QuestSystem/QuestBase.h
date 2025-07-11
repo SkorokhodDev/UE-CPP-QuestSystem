@@ -15,6 +15,10 @@ class QUESTSYSTEM_API AQuestBase : public AActor
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UDataTable* QuestDataTable;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName QuestId; 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -42,9 +46,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UFUNCTION()
+	void OnObjectiveIdHeard(FString& InObjectiveID);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void GetQuestDetails();
+
 
 };
