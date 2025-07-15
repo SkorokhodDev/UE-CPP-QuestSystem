@@ -7,6 +7,8 @@
 #include "QuestTypes.h"
 #include "QuestBase.generated.h"
 
+class UUserWidget;
+
 UCLASS()
 class QUESTSYSTEM_API AQuestBase : public AActor
 {
@@ -17,9 +19,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UDataTable* QuestDataTable;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> QuestNotificationWidgetClass; //TODO: Проверка на класс для инициализации
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FName QuestId; 
+	FName QuestId; // Row name in DataTable
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FQuestDetails QuestDetails;
@@ -40,15 +45,25 @@ public:
 	// Sets default values for this actor's properties
 	AQuestBase();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateWidgetNotificationEvent(const FObjectiveDetails& InObjectiveDetails);
+
 	UFUNCTION(BlueprintCallable)
 	void InitializeQuest(FName InQuestID);
+	
+	UFUNCTION()
+	void OnObjectiveIdHeard(FString InObjectiveID);
+
+	UFUNCTION(BlueprintCallable)
+	FObjectiveDetails GetObjectiveDataByID(FString InObjectiveID);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsObjectiveCompleted(FString InObjectiveID);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	UFUNCTION()
-	void OnObjectiveIdHeard(FString& InObjectiveID);
+
 
 	UFUNCTION()
 	void GetQuestDetails();
