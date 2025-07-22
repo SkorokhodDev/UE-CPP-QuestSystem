@@ -52,7 +52,7 @@ public:
 	void InitializeQuest(FName InQuestID);
 	
 	UFUNCTION()
-	void OnObjectiveIdHeard(FString InObjectiveID);
+	void OnObjectiveIdHeard(FString InObjectiveID, int32 InValue);
 
 	UFUNCTION(BlueprintCallable)
 	FObjectiveDetails GetObjectiveDataByID(FString InObjectiveID);

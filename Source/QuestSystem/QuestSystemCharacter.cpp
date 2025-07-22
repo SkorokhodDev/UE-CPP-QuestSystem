@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Components/QuestLogComponent.h"
+#include "Components/SimpleInventoryComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -50,6 +51,7 @@ AQuestSystemCharacter::AQuestSystemCharacter()
 
 	QuestLogComponent = CreateDefaultSubobject<UQuestLogComponent>(TEXT("QuestLogComponent"));
 
+	SimpleInventoryComponent = CreateDefaultSubobject<USimpleInventoryComponent>(TEXT("SimpleInventoryComponent"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }

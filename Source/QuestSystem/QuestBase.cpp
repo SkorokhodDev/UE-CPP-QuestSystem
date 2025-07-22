@@ -7,6 +7,7 @@
 
 #include "QuestSystemCharacter.h"
 #include "QuestTypes.h"
+#include "Components/SimpleInventoryComponent.h"
 
 // Sets default values
 AQuestBase::AQuestBase()
@@ -32,21 +33,38 @@ void AQuestBase::BeginPlay()
 	if (MyCharacter)
 	{
 		MyCharacter->OnObjectiveIDCalledDelegate.AddDynamic(this, &AQuestBase::OnObjectiveIdHeard);
+	
+		
+		// Can be moved to BP or made as implementable event in character.
+		for (auto& objective : CurrentStageDetails.Objectives)
+		{
+			if (objective.Type == EObjectiveType::Collect)
+			{
+				int32 itemAmount = MyCharacter->SimpleInventoryComponent->QueryItem(FName(*objective.ObjectiveID));
+				if(itemAmount > 0)
+					OnObjectiveIdHeard(objective.ObjectiveID, itemAmount);
+			}
+		}
 	}
 }
 
 // for updating quest progress
-void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID)
+void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 {
 	UE_LOG(LogTemp, Log, TEXT("QuestBase: Objective id heard '%s'"), *InObjectiveID);
-	if (int32* key = CurrentObjectiveProgress.Find(InObjectiveID))
+	if (int32* value = CurrentObjectiveProgress.Find(InObjectiveID))
 	{
 		UE_LOG(LogTemp, Log, TEXT(" - - - > Objective id was FOUND '%s'"), *InObjectiveID);
 
-		FObjectiveDetails ObjectiveData = GetObjectiveDataByID(InObjectiveID);
-		if (*key < ObjectiveData.Quantity)
+		if (InValue < 0) // decreate key value
 		{
-			CurrentObjectiveProgress.Add(InObjectiveID, *key + 1); // Update progress
+			CurrentObjectiveProgress.Add(InObjectiveID, FMath::Max(0, *value + InValue));
+			return;
+		}
+		FObjectiveDetails ObjectiveData = GetObjectiveDataByID(InObjectiveID);
+		if (*value < ObjectiveData.Quantity)
+		{
+			CurrentObjectiveProgress.Add(InObjectiveID, *value + InValue); // Update progress
 			if (IsObjectiveCompleted(InObjectiveID))
 			{
 				//TODO: Remake to set widget controller.

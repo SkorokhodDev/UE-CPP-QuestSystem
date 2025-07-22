@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UQuestLogComponent;
 class UInputAction;
+class USimpleInventoryComponent;
 struct FInputActionValue;
 
 //TODO: добавить проверку, на то что класс для спавна квеста выбран правильно. Так же добавить проверку, что дата тейбл выбран в БП_квест бейсе.
@@ -18,7 +19,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 //Delegates
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectiveIDCalled, FString, ObjectiveID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnObjectiveIDCalled, FString, ObjectiveID, int32, Value);
 
 /**
  *  A simple player-controllable third person character
@@ -42,6 +43,10 @@ class AQuestSystemCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 
 public:
+	// public for easy realization, better make incapsulation
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USimpleInventoryComponent* SimpleInventoryComponent;
+
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnObjectiveIDCalled OnObjectiveIDCalledDelegate;
 
