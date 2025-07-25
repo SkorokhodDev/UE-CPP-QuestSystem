@@ -97,7 +97,7 @@ void AQuestSystemCharacter::Look(const FInputActionValue& Value)
 }
 
 void AQuestSystemCharacter::DoMove(float Right, float Forward)
-{
+ {
 	if (GetController() != nullptr)
 	{
 		// find out which way is forward

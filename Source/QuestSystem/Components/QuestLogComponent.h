@@ -35,7 +35,7 @@ public:
 	UQuestLogComponent();
 
 	UFUNCTION(BlueprintCallable)
-	void AddNewQuest(FName InQuestID);
+	AQuestBase* AddNewQuest(FName InQuestID);
 
 	UFUNCTION(BlueprintCallable)
 	void CompleteQuest(FName InQuestID);
@@ -45,6 +45,20 @@ public:
 
 	UFUNCTION(Blueprintcallable)
 	void TrackQuest(FName InQuestID);
+	
+	//////////////// Setters && Getters
+
+	UFUNCTION(BlueprintCallable, Category = "Quests")
+	void SetCurrentActiveQuests(const TArray<FName>& NewActiveQuests) {	CurrentActiveQuests = NewActiveQuests; }
+
+	UFUNCTION(BlueprintCallable, Category = "Quests")
+	void SetCompletedQuests(const TArray<FName>& NewCompletedQuests) { CompletedQuests = NewCompletedQuests; }
+
+	UFUNCTION(BlueprintPure, Category = "Quests")
+	const TArray<FName>& GetCurrentActiveQuests() const{ return CurrentActiveQuests; }
+
+	UFUNCTION(BlueprintPure, Category = "Quests")
+	const TArray<FName>& GetCompletedQuests() const { return CompletedQuests; }
 
 protected:
 	// Called when the game starts

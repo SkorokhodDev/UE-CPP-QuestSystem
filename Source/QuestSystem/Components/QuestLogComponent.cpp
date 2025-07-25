@@ -15,7 +15,7 @@ UQuestLogComponent::UQuestLogComponent()
 	// ...
 }
 
-void UQuestLogComponent::AddNewQuest(FName InQuestID)
+AQuestBase* UQuestLogComponent::AddNewQuest(FName InQuestID)
 {
 	CurrentActiveQuests.AddUnique(InQuestID);
 
@@ -27,7 +27,10 @@ void UQuestLogComponent::AddNewQuest(FName InQuestID)
 
 		UGameplayStatics::FinishSpawningActor(newQuest, SpawnTransform);
 		CurrentQuests.Add(newQuest);
+
+		return newQuest;
 	}
+	return nullptr;
 }
 
 void UQuestLogComponent::CompleteQuest(FName InQuestID)
