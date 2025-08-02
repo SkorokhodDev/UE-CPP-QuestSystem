@@ -9,6 +9,8 @@
 
 class UUserWidget;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectIDHeard);
+
 UCLASS()
 class QUESTSYSTEM_API AQuestBase : public AActor
 {
@@ -23,17 +25,22 @@ protected:
 	TSubclassOf<UUserWidget> QuestNotificationWidgetClass; //TODO: Проверка на класс для инициализации
 
 public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnObjectIDHeard OnObjectIDHeardDelegate;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName QuestId; // Row name in DataTable
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FQuestDetails QuestDetails;
 
+	//TODO: rename to CurrentStageIndex
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int32 CurrentStage;
+	int32 CurrentStageIndex;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FStageDetails CurrentStageDetails;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//FStageDetails CurrentStageDetails;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TMap<FString, int32> CurrentObjectiveProgress;
@@ -59,6 +66,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsObjectiveCompleted(FString InObjectiveID);
+
+	UFUNCTION(BlueprintCallable)
+	bool AreAllObjectivesCompleted();
 
 protected:
 	// Called when the game starts or when spawned

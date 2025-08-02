@@ -19,7 +19,7 @@ struct FQuestSaveData
 	TMap<FString, int32> ObjectiveProgress;
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 CurrentStage;
+	int32 CurrentStageIndex;
 
 };
 /**

@@ -10,6 +10,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDisplayQuest, const FDataTableRowHandle&, DataTableRowHandle);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDisplayRewards, const FDataTableRowHandle&, DataTableRowHandle);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class QUESTSYSTEM_API UQuestGiverComponent : public UActorComponent, public IInteractionInterface
@@ -20,6 +21,9 @@ protected:
 	UPROPERTY(BlueprintAssignable)
 	FOnDisplayQuest OnDisplayQuestDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnDisplayRewards OnDisplayRewardsDelegate;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FDataTableRowHandle QuestDataHandle;
 
@@ -29,6 +33,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisplayQuest();
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayRewards();
 
 protected:
 	// Called when the game starts

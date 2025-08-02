@@ -85,6 +85,9 @@ struct FQuestDetails : public FTableRowBase
 	bool bIsMainQuest;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAutoAccept;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FStageDetails> Stages;
 };
 

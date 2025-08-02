@@ -11,7 +11,7 @@ void UQuestSaveGame::SaveQuestDetails(const AQuestBase* const InQuest)
 
 	FQuestSaveData questSaveData;
 	questSaveData.ObjectiveProgress = InQuest->CurrentObjectiveProgress;
-	questSaveData.CurrentStage = InQuest->CurrentStage;
+	questSaveData.CurrentStageIndex = InQuest->CurrentStageIndex;
 	
 	QuestProgress.Add(InQuest->QuestId, questSaveData);
 }
@@ -26,7 +26,7 @@ void UQuestSaveGame::LoadQuestDetails(UQuestLogComponent* const InQuestComponent
 		{
 			if (FQuestSaveData* questSaveData = QuestProgress.Find(currentActiveQuest))
 			{
-				newQuest->CurrentStage = questSaveData->CurrentStage;
+				newQuest->CurrentStageIndex = questSaveData->CurrentStageIndex;
 				newQuest->CurrentObjectiveProgress = questSaveData->ObjectiveProgress;
 			}
 		}

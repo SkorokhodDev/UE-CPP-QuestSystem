@@ -35,7 +35,10 @@ AQuestBase* UQuestLogComponent::AddNewQuest(FName InQuestID)
 
 void UQuestLogComponent::CompleteQuest(FName InQuestID)
 {
-
+	CompletedQuests.AddUnique(InQuestID);
+	CurrentActiveQuests.Remove(InQuestID);
+	
+	OnQuestCompletedDelegate.Broadcast(GetQuestActor(InQuestID));
 }
 
 bool UQuestLogComponent::QueryActiveQuest(FName InQuestID)
@@ -43,8 +46,36 @@ bool UQuestLogComponent::QueryActiveQuest(FName InQuestID)
 	return CurrentActiveQuests.Contains(InQuestID);
 }
 
+bool UQuestLogComponent::QueryCompletedQuest(FName InQuestID)
+{
+	return CompletedQuests.Contains(InQuestID);
+}
+
 void UQuestLogComponent::TrackQuest(FName InQuestID)
 {
+}
+
+void UQuestLogComponent::TurnInQuest(FName InQuestID)
+{
+	if (AQuestBase* quest = GetQuestActor(InQuestID))
+	{
+		//quest->CurrentStageDetails
+		// Here you getting reward for the quest to your custom game components
+
+		CompleteQuest(InQuestID);
+	}
+}
+
+AQuestBase* UQuestLogComponent::GetQuestActor(FName InQuestID)
+{
+	for (auto currentQuest : CurrentQuests)
+	{
+		if (InQuestID == currentQuest->QuestId)
+		{
+			return currentQuest;
+		}
+	}
+	return nullptr;
 }
 
 // Called when the game starts

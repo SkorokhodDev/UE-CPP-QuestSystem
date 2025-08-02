@@ -35,8 +35,9 @@ void AQuestBase::BeginPlay()
 		MyCharacter->OnObjectiveIDCalledDelegate.AddDynamic(this, &AQuestBase::OnObjectiveIdHeard);
 	
 		
-		// Can be moved to BP or made as implementable event in character.
-		for (auto& objective : CurrentStageDetails.Objectives)
+		// Can be moved to BP or made as implementable event in character. (for my DDF project)
+		// Check for inventory items
+		for (auto& objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
 		{
 			if (objective.Type == EObjectiveType::Collect)
 			{
@@ -45,6 +46,7 @@ void AQuestBase::BeginPlay()
 					OnObjectiveIdHeard(objective.ObjectiveID, itemAmount);
 			}
 		}
+		bIsCompleted = AreAllObjectivesCompleted();
 	}
 }
 
@@ -56,13 +58,12 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 	{
 		UE_LOG(LogTemp, Log, TEXT(" - - - > Objective id was FOUND '%s'"), *InObjectiveID);
 
-		if (InValue < 0) // decreate key value
+		FObjectiveDetails ObjectiveData = GetObjectiveDataByID(InObjectiveID);
+		if (InValue < 0) // decrease key value
 		{
 			CurrentObjectiveProgress.Add(InObjectiveID, FMath::Max(0, *value + InValue));
-			return;
 		}
-		FObjectiveDetails ObjectiveData = GetObjectiveDataByID(InObjectiveID);
-		if (*value < ObjectiveData.Quantity)
+		else if (*value < ObjectiveData.Quantity)
 		{
 			CurrentObjectiveProgress.Add(InObjectiveID, *value + InValue); // Update progress
 			if (IsObjectiveCompleted(InObjectiveID))
@@ -74,7 +75,25 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 				//	MyWidget->AddToViewport();
 				//}
 				CreateWidgetNotificationEvent(ObjectiveData);
+
+				if (AreAllObjectivesCompleted())
+				{
+					if (QuestDetails.Stages.IsValidIndex(CurrentStageIndex + 1))
+					{
+						CurrentStageIndex = CurrentStageIndex + 1;
+						CurrentObjectiveProgress.Empty();
+						for (auto& objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
+						{
+							CurrentObjectiveProgress.Add(objective.ObjectiveID, 0);
+						}
+					}
+					else
+					{
+						bIsCompleted = true;
+					}
+				}
 			}
+			OnObjectIDHeardDelegate.Broadcast();
 		}
 	}
 	return;
@@ -82,14 +101,13 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 
 FObjectiveDetails AQuestBase::GetObjectiveDataByID(FString InObjectiveID)
 {
-	for (auto& objective : CurrentStageDetails.Objectives)
+	for (auto& objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
 	{
 		if (objective.ObjectiveID == InObjectiveID)
 		{
 			return objective;
 		}
 	}
-
 	return FObjectiveDetails();
 }
 
@@ -106,6 +124,22 @@ bool AQuestBase::IsObjectiveCompleted(FString InObjectiveID)
 	return false;
 }
 
+bool AQuestBase::AreAllObjectivesCompleted()
+{
+	for (auto objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
+	{
+		FObjectiveDetails objectiveData = GetObjectiveDataByID(objective.ObjectiveID);
+		if (int32* key = CurrentObjectiveProgress.Find(objective.ObjectiveID))
+		{
+			if (*key < objectiveData.Quantity)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 // Inits quest details from Data Table.
 void AQuestBase::GetQuestDetails()
 {
@@ -115,10 +149,10 @@ void AQuestBase::GetQuestDetails()
 
 	if (QuestRow)
 	{
-		CurrentStageDetails = QuestRow->Stages[CurrentStage];
+		QuestDetails = *QuestRow;
 		CurrentObjectiveProgress.Empty();
 
-		for (auto& objective : CurrentStageDetails.Objectives)
+		for (auto& objective : QuestRow->Stages[CurrentStageIndex].Objectives)
 		{
 			CurrentObjectiveProgress.Add(objective.ObjectiveID, 0);
 		}
