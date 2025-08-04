@@ -8,6 +8,7 @@
 #include "QuestSystemCharacter.h"
 #include "QuestTypes.h"
 #include "Components/SimpleInventoryComponent.h"
+#include "Components/QuestLogComponent.h"
 
 // Sets default values
 AQuestBase::AQuestBase()
@@ -26,6 +27,8 @@ void AQuestBase::InitializeQuest(FName InQuestID)
 void AQuestBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(QuestNotificationWidgetClass);
 
 	GetQuestDetails();
 
@@ -90,6 +93,13 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 					else
 					{
 						bIsCompleted = true;
+						if (QuestDetails.bAutoComplete)
+						{
+							if (UQuestLogComponent* questLogComponent = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetComponentByClass<UQuestLogComponent>())
+							{
+								questLogComponent->TurnInQuest(QuestId);
+							}
+						}
 					}
 				}
 			}

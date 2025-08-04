@@ -22,7 +22,7 @@ protected:
 	UDataTable* QuestDataTable;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> QuestNotificationWidgetClass; //TODO: Проверка на класс для инициализации
+	TSubclassOf<UUserWidget> QuestNotificationWidgetClass; 
 
 public:
 
@@ -35,12 +35,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FQuestDetails QuestDetails;
 
-	//TODO: rename to CurrentStageIndex
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int32 CurrentStageIndex;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	//FStageDetails CurrentStageDetails;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TMap<FString, int32> CurrentObjectiveProgress;
@@ -74,9 +70,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 	UFUNCTION()
 	void GetQuestDetails();
-
-
 };
