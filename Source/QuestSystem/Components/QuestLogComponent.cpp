@@ -28,6 +28,7 @@ AQuestBase* UQuestLogComponent::AddNewQuest(FName InQuestID)
 		UGameplayStatics::FinishSpawningActor(newQuest, SpawnTransform);
 		CurrentQuests.Add(newQuest);
 
+		OnAddNewQuestDelegate.Broadcast(newQuest);
 		return newQuest;
 	}
 	return nullptr;
@@ -76,6 +77,11 @@ AQuestBase* UQuestLogComponent::GetQuestActor(FName InQuestID)
 		}
 	}
 	return nullptr;
+}
+
+const TArray<AQuestBase*>& UQuestLogComponent::GetCurrentQuests()
+{
+	return CurrentQuests;
 }
 
 // Called when the game starts

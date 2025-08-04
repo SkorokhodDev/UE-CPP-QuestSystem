@@ -20,7 +20,7 @@ enum class EDialogState : uint8
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class QUESTSYSTEM_API UDialogWidget : public UUserWidget
 {
 	GENERATED_BODY()

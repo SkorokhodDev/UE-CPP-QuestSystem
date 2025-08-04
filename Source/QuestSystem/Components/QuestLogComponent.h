@@ -8,6 +8,7 @@
 
 class AQuestBase;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddNewQuest, AQuestBase*) //, QuestActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, AQuestBase*, QuestActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -16,6 +17,9 @@ class QUESTSYSTEM_API UQuestLogComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	//UPROPERTY(BlueprintAssignable)
+	FOnAddNewQuest OnAddNewQuestDelegate;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestCompleted OnQuestCompletedDelegate;
 
@@ -74,6 +78,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Quests")
 	const TArray<FName>& GetCompletedQuests() const { return CompletedQuests; }
+
+	UFUNCTION(BlueprintPure, Category = "Quests")
+	const TArray<AQuestBase*>& GetCurrentQuests();
 
 protected:
 	// Called when the game starts
