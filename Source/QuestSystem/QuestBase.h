@@ -9,7 +9,7 @@
 
 class UUserWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnObjectIDHeard);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectIDHeard, AQuestBase*, SelfQuestActor);
 
 UCLASS()
 class QUESTSYSTEM_API AQuestBase : public AActor

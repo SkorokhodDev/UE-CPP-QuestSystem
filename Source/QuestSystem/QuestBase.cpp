@@ -65,6 +65,7 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 		if (InValue < 0) // decrease key value
 		{
 			CurrentObjectiveProgress.Add(InObjectiveID, FMath::Max(0, *value + InValue));
+			OnObjectIDHeardDelegate.Broadcast(this);
 		}
 		else if (*value < ObjectiveData.Quantity)
 		{
@@ -103,7 +104,7 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 					}
 				}
 			}
-			OnObjectIDHeardDelegate.Broadcast();
+			OnObjectIDHeardDelegate.Broadcast(this);
 		}
 	}
 	return;
