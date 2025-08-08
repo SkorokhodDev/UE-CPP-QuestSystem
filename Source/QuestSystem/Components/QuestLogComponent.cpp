@@ -39,7 +39,7 @@ void UQuestLogComponent::CompleteQuest(FName InQuestID)
 	CompletedQuests.AddUnique(InQuestID);
 	CurrentActiveQuests.Remove(InQuestID);
 	
-	OnQuestCompletedDelegate.Broadcast(GetQuestActor(InQuestID));
+	OnQuestTurnedInDelegate.Broadcast(GetQuestActor(InQuestID));
 }
 
 bool UQuestLogComponent::QueryActiveQuest(FName InQuestID)
@@ -62,6 +62,15 @@ void UQuestLogComponent::TurnInQuest(FName InQuestID)
 	{
 		//quest->CurrentStageDetails
 		// Here you getting reward for the quest to your custom game components
+
+		FString Message = FString::Printf(TEXT("QuestLogComp -> Turn in quest: %s"), *InQuestID.ToString());
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.0f,
+			FColor::Green,
+			Message
+		);
+
 
 		CompleteQuest(InQuestID);
 	}

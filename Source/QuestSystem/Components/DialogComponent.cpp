@@ -38,6 +38,7 @@ void UDialogComponent::InitDialogWidget()
 		if (ACharacter* PlayerChar = Cast<ACharacter>(PlayerController->GetPawn()))
 			PlayerChar->GetCharacterMovement()->DisableMovement();
 		PlayerController->SetInputMode(FInputModeUIOnly());
+		PlayerController->bShowMouseCursor = true;
 
 		Widget->AddToViewport();
 
@@ -46,6 +47,7 @@ void UDialogComponent::InitDialogWidget()
 		DialogAIController->RunBehaviorTree(DialogTree);
 
 		DialogAIController->GetBlackboardComponent()->SetValueAsObject(FName("DialogWidget"), DialogWidget);
+		DialogAIController->GetBlackboardComponent()->SetValueAsObject(FName("DialogComponentOwner"), GetOwner());
 	}
 }
 
@@ -57,6 +59,7 @@ void UDialogComponent::OnExitDialog()
 		if (ACharacter* PlayerChar = Cast<ACharacter>(PlayerController->GetPawn()))
 			PlayerChar->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->bShowMouseCursor = false;
 
 		DialogWidget->RemoveFromParent();
 

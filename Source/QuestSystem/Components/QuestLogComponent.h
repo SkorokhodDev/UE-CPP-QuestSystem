@@ -9,7 +9,7 @@
 class AQuestBase;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddNewQuest, AQuestBase*) //, QuestActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, AQuestBase*, QuestActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestTurnedIn, AQuestBase*, QuestActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class QUESTSYSTEM_API UQuestLogComponent : public UActorComponent
@@ -21,7 +21,7 @@ public:
 	FOnAddNewQuest OnAddNewQuestDelegate;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnQuestCompleted OnQuestCompletedDelegate;
+	FOnQuestTurnedIn OnQuestTurnedInDelegate;
 
 protected:
 	// Base class to spawn quest actors in the world

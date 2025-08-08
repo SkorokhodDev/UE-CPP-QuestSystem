@@ -94,12 +94,10 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 					else
 					{
 						bIsCompleted = true;
-						if (QuestDetails.bAutoComplete)
+						if (UQuestLogComponent* questLogComponent = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetComponentByClass<UQuestLogComponent>())
 						{
-							if (UQuestLogComponent* questLogComponent = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetComponentByClass<UQuestLogComponent>())
-							{
-								questLogComponent->TurnInQuest(QuestId);
-							}
+							questLogComponent->TurnInQuest(QuestId);
+							// Call OnTurnedInCalledDelegate for DDF project - and also in quest giver, bec its auto turn in
 						}
 					}
 				}
@@ -110,7 +108,7 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 	return;
 }
 
-FObjectiveDetails AQuestBase::GetObjectiveDataByID(FString InObjectiveID)
+FObjectiveDetails AQuestBase::GetObjectiveDataByID(FString InObjectiveID) const
 {
 	for (auto& objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
 	{
@@ -140,15 +138,59 @@ bool AQuestBase::AreAllObjectivesCompleted()
 	for (auto objective : QuestDetails.Stages[CurrentStageIndex].Objectives)
 	{
 		FObjectiveDetails objectiveData = GetObjectiveDataByID(objective.ObjectiveID);
-		if (int32* key = CurrentObjectiveProgress.Find(objective.ObjectiveID))
+		if (int32* progress = CurrentObjectiveProgress.Find(objective.ObjectiveID))
 		{
-			if (*key < objectiveData.Quantity)
+			if (*progress < objectiveData.Quantity)
 			{
 				return false;
 			}
 		}
 	}
 	return true;
+}
+
+bool AQuestBase::AreAllObjectivesCompletedExceptType(EObjectiveType IgnoredType) const
+{
+	if (!QuestDetails.Stages.IsValidIndex(CurrentStageIndex))
+	{
+		return false;
+	}
+
+	const auto& objectives = QuestDetails.Stages[CurrentStageIndex].Objectives;
+	for (const auto& objective : objectives)
+	{
+		if (objective.Type == IgnoredType)
+		{
+			continue;
+		}
+		const FObjectiveDetails objectiveData = GetObjectiveDataByID(objective.ObjectiveID);
+		if (const int32* progress = CurrentObjectiveProgress.Find(objective.ObjectiveID))
+		{
+			if (*progress < objectiveData.Quantity)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool AQuestBase::ContainsObjectiveType(EObjectiveType InObjectiveType) const
+{
+	if (!QuestDetails.Stages.IsValidIndex(CurrentStageIndex))
+	{
+		return false;
+	}
+
+	const TArray<FObjectiveDetails>& Objectives = QuestDetails.Stages[CurrentStageIndex].Objectives;
+	for (const auto& Objective : Objectives)
+	{
+		if (Objective.Type == InObjectiveType)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 // Inits quest details from Data Table.

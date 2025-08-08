@@ -11,7 +11,9 @@ enum class EObjectiveType : uint8
 	Location     UMETA(DisplayName = "Reach Location"),
 	Kill         UMETA(DisplayName = "Kill Target"),
 	Interact     UMETA(DisplayName = "Interact with Object"),
-	Collect      UMETA(DisplayName = "Collect Items")
+	Collect      UMETA(DisplayName = "Collect Items"),
+	Dialogue	 UMETA(DisplayName = "Talk / Convince NPC"),
+	ClaimReward	 UMETA(DisplayName = "Claim reward")
 };
 
 

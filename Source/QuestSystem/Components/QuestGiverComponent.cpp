@@ -25,7 +25,10 @@ void UQuestGiverComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	if (QuestDataHandle.IsNull())
+	{
+		check(0);
+	}
 }
 
 void UQuestGiverComponent::DisplayQuest()
@@ -69,9 +72,7 @@ void UQuestGiverComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-//TODO: here rewrite to new funk, where transfaring character class, which then casting to our character. 
-// Так же тут убрать вообще интефрейс интеракшина и перенести всё в новую функцию.
-void UQuestGiverComponent::Interact_Implementation(FString& ObjectiveID)
+void UQuestGiverComponent::HandleQuestInteraction(FString& ObjectiveID)
 {
 	AQuestSystemCharacter* MyCharacter = Cast<AQuestSystemCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (MyCharacter)
@@ -83,9 +84,10 @@ void UQuestGiverComponent::Interact_Implementation(FString& ObjectiveID)
 			// here update UI
 			if (AQuestBase* quest = QuestLogComponent->GetQuestActor(QuestDataHandle.RowName))
 			{
-				if (quest->bIsCompleted)
+				// quest->CurrentStageIndex == quest->QuestDetails.Stages.Num() - 1
+				if (quest->ContainsObjectiveType(EObjectiveType::ClaimReward) && quest->AreAllObjectivesCompletedExceptType(EObjectiveType::ClaimReward))
 				{
-					DisplayRewards(); 
+					DisplayRewards();
 				}
 			}
 		}
@@ -97,13 +99,19 @@ void UQuestGiverComponent::Interact_Implementation(FString& ObjectiveID)
 				// Auto accept quest
 				MyCharacter->GetQuestLogComponent()->AddNewQuest(QuestDataHandle.RowName);
 			}
-			else 
+			else
 			{
 				// Display quest dialog
-				DisplayQuest(); 
+				DisplayQuest();
 			}
 		}
 	}
 	ObjectiveID = GetOwner()->GetName();
+}
+
+//TODO: here rewrite to new funk, where transferring character class, which then casting to our character. 
+void UQuestGiverComponent::Interact_Implementation(FString& ObjectiveID)
+{
+	HandleQuestInteraction(ObjectiveID);
 }
 

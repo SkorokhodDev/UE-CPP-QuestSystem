@@ -58,13 +58,19 @@ public:
 	void OnObjectiveIdHeard(FString InObjectiveID, int32 InValue);
 
 	UFUNCTION(BlueprintCallable)
-	FObjectiveDetails GetObjectiveDataByID(FString InObjectiveID);
+	FObjectiveDetails GetObjectiveDataByID(FString InObjectiveID) const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsObjectiveCompleted(FString InObjectiveID);
 
 	UFUNCTION(BlueprintCallable)
 	bool AreAllObjectivesCompleted();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool AreAllObjectivesCompletedExceptType(EObjectiveType IgnoredType) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool ContainsObjectiveType(EObjectiveType InObjectiveType) const;
 
 protected:
 	// Called when the game starts or when spawned
