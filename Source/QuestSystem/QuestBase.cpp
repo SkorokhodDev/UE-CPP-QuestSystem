@@ -97,8 +97,8 @@ void AQuestBase::OnObjectiveIdHeard(FString InObjectiveID, int32 InValue)
 						if (UQuestLogComponent* questLogComponent = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetComponentByClass<UQuestLogComponent>())
 						{
 							questLogComponent->TurnInQuest(QuestId);
-							// Call OnTurnedInCalledDelegate for DDF project - and also in quest giver, bec its auto turn in
 						}
+						OnQuestCompletedDelegate.Broadcast(this);
 					}
 				}
 			}

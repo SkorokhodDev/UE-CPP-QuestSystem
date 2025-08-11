@@ -10,6 +10,7 @@
 class UUserWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectIDHeard, AQuestBase*, SelfQuestActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, AQuestBase*, SelfQuestActor);
 
 UCLASS()
 class QUESTSYSTEM_API AQuestBase : public AActor
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnObjectIDHeard OnObjectIDHeardDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnQuestCompleted OnQuestCompletedDelegate;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName QuestId; // Row name in DataTable
